@@ -19,7 +19,8 @@ songplay_table_create = ("""
         artist_id VARCHAR,
         session_id INT NOT NULL,
         location VARCHAR NOT NULL,
-        user_agent VARCHAR NOT NULL
+        user_agent VARCHAR NOT NULL,
+        UNIQUE (songplay_id)
     )
 """)
 
@@ -30,7 +31,8 @@ user_table_create = ("""
         first_name VARCHAR NOT NULL,
         last_name VARCHAR NOT NULL,
         gender VARCHAR NOT NULL,
-        level VARCHAR NOT NULL
+        level VARCHAR NOT NULL,
+        UNIQUE (user_id)
     )
 """)
 
@@ -41,7 +43,8 @@ song_table_create = ("""
         title VARCHAR NOT NULL,
         artist_id VARCHAR NOT NULL,
         year INT NOT NULL,
-        duration NUMERIC(10,5) NOT NULL
+        duration NUMERIC(10,5) NOT NULL,
+        UNIQUE (song_id)
     )
 """)
 
@@ -51,15 +54,16 @@ artist_table_create = ("""
         artist_id VARCHAR PRIMARY KEY NOT NULL,
         artist_latitude NUMERIC(10,5),
         artist_longitude NUMERIC(10,5),
-        artist_location VARCHAR NOT NULL,
-        artist_name VARCHAR NOT NULL
+        artist_location VARCHAR,
+        artist_name VARCHAR NOT NULL,
+        UNIQUE (artist_id)
     )
 """)
 
 time_table_create = ("""
     CREATE TABLE IF NOT EXISTS time
     (
-        start_time TIMESTAMP PRIMARY KEY NOT NULL,
+        start_time TIMESTAMP NOT NULL,
         hour INT NOT NULL,
         day INT NOT NULL,
         week INT NOT NULL,
@@ -75,21 +79,29 @@ time_table_create = ("""
 songplay_table_insert = ("""
     INSERT INTO songplays (songplay_id, start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (songplay_id)
+    DO NOTHING
 """)
 
 user_table_insert = ("""
     INSERT INTO users (user_id, first_name, last_name, gender, level)
     VALUES (%s, %s, %s, %s, %s)
+    ON CONFLICT (user_id)
+    DO NOTHING
 """)
 
 song_table_insert = ("""
     INSERT INTO songs (artist_id, song_id, title, duration, year)
     VALUES (%s, %s, %s, %s, %s)
+    ON CONFLICT (song_id)
+    DO NOTHING
 """)
 
 artist_table_insert = ("""
     INSERT INTO artists (artist_id, artist_latitude, artist_longitude, artist_location, artist_name)
     VALUES (%s, %s, %s, %s, %s)
+    ON CONFLICT (artist_id)
+    DO NOTHING
 """)
 
 time_table_insert = ("""
